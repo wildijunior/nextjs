@@ -1,5 +1,6 @@
 import { format, parseISO } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
+import Image from "next/image";
 import { GetStaticProps } from "next";
 import { api } from "../services/api";
 import { convertDurationToTimeString } from "../utils/convertDurationToTimeString";
@@ -23,7 +24,7 @@ type HomeProps = {
   allEpisodes: Episodes[];
 };
 
-export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
+export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
@@ -31,12 +32,30 @@ export default function Home({latestEpisodes, allEpisodes}: HomeProps) {
 
         {/* percorre episódios com map */}
         <ul>
-          {latestEpisodes.map(episode=>{
-            return(
+          {latestEpisodes.map((episode) => {
+            return (
               <li key={episode.id}>
+                {/* configuração da imagem que sera carregada */}
+                {/* nao funciona pra qualquer endereco de imagem */}
+                <Image
+                  width={192}
+                  height={192}
+                  src={episode.thumbnail}
+                  alt={episode.title}
+                />
+
+                <div className={styles.episodeDetails}>
                   <a href="">{episode.title}</a>
+                  <p>{episode.members}</p>
+                  <span>{episode.publishedAt}</span>
+                  <span>{episode.durationAString}</span>
+                </div>
+
+                <button type="button">
+                  <img src="/play-green.svg" alt="Tocar episódio" />
+                </button>
               </li>
-            )
+            );
           })}
         </ul>
       </section>
