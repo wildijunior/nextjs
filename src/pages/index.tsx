@@ -14,7 +14,7 @@ type Episodes = {
   description: string;
   members: string;
   duration: number;
-  durationAString: string;
+  durationAsString: string;
   url: string;
   publishedAt: string;
 };
@@ -36,19 +36,20 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
             return (
               <li key={episode.id}>
                 {/* configuração da imagem que sera carregada */}
-                {/* nao funciona pra qualquer endereco de imagem */}
+                {/* nao funciona pra qualquer endereço de imagem */}
                 <Image
                   width={192}
                   height={192}
                   src={episode.thumbnail}
                   alt={episode.title}
+                  objectFit="cover"
                 />
 
                 <div className={styles.episodeDetails}>
                   <a href="">{episode.title}</a>
                   <p>{episode.members}</p>
                   <span>{episode.publishedAt}</span>
-                  <span>{episode.durationAString}</span>
+                  <span>{episode.durationAsString}</span>
                 </div>
 
                 <button type="button">
@@ -66,6 +67,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  // CHAMADA A API
   const { data } = await api.get("episodes", {
     params: {
       _limit: 12,
@@ -81,7 +83,7 @@ export const getStaticProps: GetStaticProps = async () => {
       title: episode.title,
       thumbnail: episode.thumbnail,
       members: episode.members,
-      // alem de alterar da data vamos colocar um novo nome
+      // alem de formatar a data vamos colocar um novo nome
       publishedAt: format(parseISO(episode.published_at), "d MMM yy", {
         locale: ptBR,
       }),
@@ -94,7 +96,8 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   });
 
-  // divide os episódios em dois grupos. apenas os 2 primeiros e o restante
+  // divide os episódios em dois grupos.
+  // apenas os 2 primeiros e o restante
   const latestEpisodes = episodes.slice(0, 2);
   const allEpisodes = episodes.slice(2, episodes.length);
 
